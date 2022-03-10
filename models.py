@@ -31,17 +31,14 @@ class GRUCell(nn.Module):
             w.data.uniform_(-std, std)
 
     def forward(self, input, hx=None):
-        # Inputs:
-        #       input: of shape (batch_size, input_size)
-        #       hx: of shape (batch_size, hidden_size)
-        # Output:
-        #       hy: of shape (batch_size, hidden_size)
+        # input (batch_size, input_size)
+        # hx (batch_size, hidden_size)
+        # hy (batch_size, hidden_size)
         if hx is None:
             hx = Variable(input.new_zeros(input.size(0), self.hidden_size))
 
         x_t = self.x2h(input)
         h_t = self.h2h(hx)
-
 
         x_reset, x_upd, x_new = x_t.chunk(3, 1)
         h_reset, h_upd, h_new = h_t.chunk(3, 1)
@@ -78,9 +75,8 @@ class GRU(nn.Module):
 
 
     def forward(self, input, hx=None):
-        # Input of shape (batch_size, seqence length, input_size)
-        #
-        # Output of shape (batch_size, output_size)
+        # Input (batch_size, seqence length, input_size)
+        # Output  (batch_size, output_size)
 
         if hx is None:
             if torch.cuda.is_available():
@@ -107,7 +103,6 @@ class GRU(nn.Module):
 
             outs.append(hidden_l)
 
-        # Take only last time step. Modify for seq to seq
         out = outs[-1].squeeze()
         out = self.fc(out)
 
